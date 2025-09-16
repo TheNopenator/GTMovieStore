@@ -96,6 +96,12 @@
               {{ review.date }}
             </h6>
             <p class="card-text">{{ review.comment }}</p>
+            {% if user.is_authenticated %}
+              <form action="{% url 'movies:report_review' template_data.movie.id review.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Report</button>
+              </form>
+            {% endif %}
           </li>
           {% endfor %}
         </ul>
