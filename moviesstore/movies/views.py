@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, Petition, Vote
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import IntegrityError
 def index(request):
     search_term = request.GET.get('search')
     if search_term:
@@ -64,3 +66,51 @@ def report_review(request, id, review_id):
     review.reported = True
     review.save()
     return redirect('movies.show', id=id)
+
+def petition_list(request):
+    """Display all movie petitions with vote counts"""
+    petitions = Petition.objects.all().order_by('-created_date')
+    template_data = {
+        'title': 'Movie Petitions',
+        'petitions': petitions
+    }
+    return render(request, 'movies/petition_list.html', {'template_data': template_data})
+
+@login_required
+def create_petition(request):
+    """Create a new movie petition"""
+    if request.method == 'POST':
+        movie_title = request.POST.get('movie_title', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        if movie_title:
+            petition = Petition()
+            petition.movie_title = movie_title
+            petition.description = description
+            petition.created_by = request.user
+            petition.save()
+            messages.success(request, f'Petition for "{movie_title}" created successfully!')
+            return redirect('movies.petition_list')
+        else:
+            messages.error(request, 'Movie title is required.')
+    
+    template_data = {
+        'title': 'Create Movie Petition'
+    }
+    return render(request, 'movies/create_petition.html', {'template_data': template_data})
+
+@login_required
+def vote_petition(request, petition_id):
+    """Vote on a petition (add vote)"""
+    petition = get_object_or_404(Petition, id=petition_id)
+    
+    try:
+        vote = Vote()
+        vote.petition = petition
+        vote.user = request.user
+        vote.save()
+        messages.success(request, f'Your vote for "{petition.movie_title}" has been recorded!')
+    except IntegrityError:
+        messages.info(request, 'You have already voted on this petition.')
+    
+    return redirect('movies.petition_list')

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-8 mx-auto mb-3">
+        <h2>Create Movie Petition</h2>
+        <hr />
+        <p class="text-muted">Help us expand our movie catalog by requesting a movie you'd like to see added!</p>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <form method="POST" action="{% url 'movies.create_petition' %}">
+              {% csrf_token %}
+              <div class="mb-4">
+                <label for="movie_title" class="form-label">
+                  <strong>Movie Title *</strong>
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="movie_title" 
+                       name="movie_title" 
+                       placeholder="Enter the title of the movie you'd like to see added"
+                       required>
+                <div class="form-text">
+                  Please provide the exact title of the movie as it appears officially.
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label for="description" class="form-label">
+                  <strong>Description (Optional)</strong>
+                </label>
+                <textarea class="form-control" 
+                          id="description" 
+                          name="description" 
+                          rows="4"
+                          placeholder="Tell us why you think this movie should be added to our catalog. You can mention the genre, year, director, or any other relevant details."></textarea>
+                <div class="form-text">
+                  Help other users understand why this movie would be a great addition to our catalog.
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'movies.petition_list' %}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left"></i> Back to Petitions
+                </a>
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-paper-plane"></i> Create Petition
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-info-circle"></i> How Petitions Work</h6>
+          </div>
+          <div class="card-body">
+            <ul class="mb-0">
+              <li>Once you create a petition, other users can vote on it</li>
+              <li>Petitions with the most votes are more likely to be considered by our team</li>
+              <li>You can only vote once per petition</li>
+              <li>Petitions help us understand what movies our community wants most</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

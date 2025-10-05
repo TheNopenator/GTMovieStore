@@ -84,27 +84,6 @@
           </div>
         </div>
         {% endif %}
-        <h2>Reviews</h2>
-        <hr />
-        <ul class="list-group">
-          {% for review in template_data.reviews %}
-          <li class="list-group-item pb-3 pt-3">
-            <h5 class="card-title">
-              Review by {{ review.user.username }}
-            </h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-              {{ review.date }}
-            </h6>
-            <p class="card-text">{{ review.comment }}</p>
-            {% if user.is_authenticated %}
-              <form action="{% url 'movies:report_review' template_data.movie.id review.id %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Report</button>
-              </form>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ul>
       </div>
       <div class="col-md-6 mx-auto mb-3 text-center">
         <img src="{{ template_data.movie.image.url }}"
