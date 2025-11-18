@@ -50,8 +50,28 @@
             {% if user.is_authenticated %}
             <a class="nav-link" href="{% url 'accounts.orders' %}">Orders
             </a>
-            <a class="nav-link"
-              href="{% url 'accounts.logout' %}">Logout ({{ user.username }})</a>
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile and user.profile.profile_picture %}
+                  <img src="{{ user.profile.profile_picture.url }}" 
+                       alt="Profile" 
+                       class="rounded-circle" 
+                       style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">
+                {% else %}
+                  <i class="fas fa-user-circle me-1"></i>
+                {% endif %}
+                {{ user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                <li><a class="dropdown-item" href="{% url 'accounts.profile' %}">
+                  <i class="fas fa-user me-2"></i>Profile
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'accounts.logout' %}">
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a></li>
+              </ul>
+            </div>
             {% else %}
             <a class="nav-link"
               href="{% url 'accounts.login' %}">Login</a>
