@@ -9,9 +9,21 @@ def index(request):
         movies = Movie.objects.filter(name__icontains=search_term)
     else:
         movies = Movie.objects.all()
+    
+    # Define rating hierarchy
+    rating_order = {'G': 0, 'PG': 1, 'PG-13': 2, 'R': 3}
+    
+    # Filter movies based on user's max content rating
+    restricted_movie_ids = []
+    if request.user.is_authenticated:
+        user_profile = request.user.profile
+        max_rating_value = rating_order.get(user_profile.max_content_rating, 3)
+        restricted_movie_ids = [m.id for m in movies if rating_order.get(m.rating, 3) > max_rating_value]
+    
     template_data = {}
     template_data['title'] = 'Movies'
     template_data['movies'] = movies
+    template_data['restricted_movie_ids'] = restricted_movie_ids
     return render(request, 'movies/index.html', {'template_data': template_data})
 
 def show(request, id):

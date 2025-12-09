@@ -25,3 +25,11 @@ class ProfilePictureForm(forms.ModelForm):
         widgets = {
             'profile_picture': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'})
         }
+
+class MaxContentRatingForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['max_content_rating']
+        widgets = {
+            'max_content_rating': forms.Select(attrs={'class': 'form-select'})
+        }

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
-from .forms import CustomUserCreationForm, CustomErrorList, ProfilePictureForm
+from .forms import CustomUserCreationForm, CustomErrorList, ProfilePictureForm, MaxContentRatingForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -57,15 +57,27 @@ def profile(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
-        form = ProfilePictureForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            template_data['success'] = 'Profile picture updated successfully!'
+        # Check which form was submitted
+        if 'profile_picture' in request.FILES or 'submit_picture' in request.POST:
+            form = ProfilePictureForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+                template_data['success'] = 'Profile picture updated successfully!'
+            template_data['form'] = form
+            template_data['rating_form'] = MaxContentRatingForm(instance=profile)
+        elif 'max_content_rating' in request.POST or 'submit_rating' in request.POST:
+            rating_form = MaxContentRatingForm(request.POST, instance=profile)
+            if rating_form.is_valid():
+                rating_form.save()
+                template_data['success'] = 'Content rating preference updated successfully!'
+            template_data['rating_form'] = rating_form
             template_data['form'] = ProfilePictureForm(instance=profile)
         else:
-            template_data['form'] = form
+            template_data['form'] = ProfilePictureForm(instance=profile)
+            template_data['rating_form'] = MaxContentRatingForm(instance=profile)
     else:
         template_data['form'] = ProfilePictureForm(instance=profile)
+        template_data['rating_form'] = MaxContentRatingForm(instance=profile)
     
     template_data['profile'] = profile
     return render(request, 'accounts/profile.html', {'template_data': template_data})

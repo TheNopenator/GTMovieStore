@@ -1,11 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
 class Movie(models.Model):
+    RATING_CHOICES = [
+        ('G', 'G - General Audiences'),
+        ('PG', 'PG - Parental Guidance'),
+        ('PG-13', 'PG-13 - Parents Strongly Cautioned'),
+        ('R', 'R - Restricted'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     description = models.TextField()
     image = models.ImageField(upload_to='movie_images/')
+    rating = models.CharField(max_length=5, choices=RATING_CHOICES, default='G')
+    
     def __str__(self):
         return str(self.id) + ' - ' + self.name
 class Review(models.Model):

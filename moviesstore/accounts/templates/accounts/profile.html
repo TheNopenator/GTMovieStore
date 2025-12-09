@@ -33,11 +33,13 @@
             
             <h5 class="text-center mb-4">{{ user.username }}</h5>
             
-            <form method="POST" enctype="multipart/form-data">
+            <!-- Profile Picture Section -->
+            <form method="POST" enctype="multipart/form-data" class="mb-4">
               {% csrf_token %}
+              <h6 class="mb-3">Profile Picture</h6>
               <div class="mb-3">
                 <label for="{{ template_data.form.profile_picture.id_for_label }}" class="form-label">
-                  Profile Picture
+                  Update Profile Picture
                 </label>
                 {{ template_data.form.profile_picture }}
                 {% if template_data.form.profile_picture.errors %}
@@ -49,7 +51,33 @@
               </div>
               
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Update Profile Picture</button>
+                <button type="submit" name="submit_picture" class="btn btn-primary">Update Profile Picture</button>
+              </div>
+            </form>
+            
+            <hr />
+            
+            <!-- Max Content Rating Section -->
+            <form method="POST" class="mb-4">
+              {% csrf_token %}
+              <h6 class="mb-3">Content Rating Preference</h6>
+              <div class="mb-3">
+                <label for="{{ template_data.rating_form.max_content_rating.id_for_label }}" class="form-label">
+                  Maximum Content Rating
+                </label>
+                {{ template_data.rating_form.max_content_rating }}
+                {% if template_data.rating_form.max_content_rating.errors %}
+                  <div class="text-danger mt-1">
+                    {{ template_data.rating_form.max_content_rating.errors }}
+                  </div>
+                {% endif %}
+                <div class="form-text">
+                  Movies with a rating higher than your selection will be blurred and disabled on the movies page.
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <button type="submit" name="submit_rating" class="btn btn-primary">Update Content Rating</button>
               </div>
             </form>
           </div>
