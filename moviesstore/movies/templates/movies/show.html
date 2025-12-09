@@ -86,8 +86,16 @@
         {% endif %}
       </div>
       <div class="col-md-6 mx-auto mb-3 text-center">
-        <img src="{{ template_data.movie.image.url }}"
-          class="rounded img-card-400" />
+        {% if template_data.movie.image %}
+          <img src="{{ template_data.movie.image.url }}"
+            class="rounded img-card-400"
+            alt="{{ template_data.movie.name }}" />
+        {% else %}
+          <div class="rounded img-card-400 bg-secondary d-flex align-items-center justify-content-center"
+            style="width: 100%; height: 500px;">
+            <span class="text-white">No Image Available</span>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
